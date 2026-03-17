@@ -63,6 +63,27 @@ export class CheckinSnapshotSchema extends BaseModel {
   declare updatedAt: DateTime
 }
 
+export class DashboardUserSchema extends BaseModel {
+  static $columns = ['active', 'createdAt', 'id', 'lastLoginAt', 'passwordHash', 'role', 'updatedAt', 'username'] as const
+  $columns = DashboardUserSchema.$columns
+  @column()
+  declare active: boolean
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column.dateTime()
+  declare lastLoginAt: DateTime | null
+  @column()
+  declare passwordHash: string
+  @column()
+  declare role: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare username: string
+}
+
 export class HmcAccountSchema extends BaseModel {
   static $columns = ['account', 'createdAt', 'lastError', 'lastSyncAt', 'password', 'token', 'updatedAt'] as const
   $columns = HmcAccountSchema.$columns

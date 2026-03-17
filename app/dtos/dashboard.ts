@@ -30,18 +30,23 @@ export interface ProjectCardDto {
   account: string
   containerCode: string | null
   name: string
+  buyTime: number | null
   priceMxn: number
   dailyProfitMxn: number
   totalIncomeMxn: number
   totalRevenueMxn: number
   availableBalanceMxn: number
   periodDays: number
+  sendNums: number
   endTime: number
   receiveTime: number | null
-  remainingSeconds: number
-  remainingLabel: string
+  payoutRemainingSeconds: number
+  payoutRemainingLabel: string
+  projectRemainingSeconds: number
+  projectRemainingLabel: string
   canReceive: boolean
   isReceived: boolean
+  paymentStatus: 'available' | 'received' | 'pending' | 'completed'
   extraFlag: number
   descriptionHtml: string | null
   iconUrl: string | null

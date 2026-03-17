@@ -37,6 +37,10 @@ export default await Env.create(new URL('../', import.meta.url), {
   INTERNAL_API_TOKEN: Env.schema.string(),
   DEFAULT_MAX_ACCOUNTS_PER_CONTAINER: Env.schema.number.optional(),
 
+  // Dashboard auth
+  DASHBOARD_ADMIN_USERNAME: Env.schema.string.optional(),
+  DASHBOARD_ADMIN_PASSWORD: Env.schema.string.optional(),
+
   // Accounts nodes bootstrap
   SERVICE_NODES_BOOTSTRAP_ENABLED: Env.schema.boolean.optional(),
   SERVICE_NODES_START: Env.schema.number.optional(),

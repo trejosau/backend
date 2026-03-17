@@ -107,4 +107,20 @@ export class AccountsOrchestratorService {
 
     return result
   }
+
+  async sync(slug: string): Promise<AccountDetailDto> {
+    const { account, node } = await this.nodeAllocator.resolveForAccount(slug)
+    await this.internalClient.syncAccount(node, account.slug)
+
+    await this.notificationService.push({
+      level: 'info',
+      scope: 'account',
+      title: 'Cuenta resincronizada',
+      message: `Se ejecuto una resincronizacion manual para la cuenta ${account.account}.`,
+      accountSlug: account.slug,
+      meta: { containerCode: node.code },
+    })
+
+    return this.queryService.getAccountDetail(account.slug)
+  }
 }

@@ -184,7 +184,17 @@ export class DashboardQueryService {
   }
 
   private serializeProject(project: ProjectSnapshot, account: AccountListItemDto): ProjectCardDto {
-    const remainingSeconds = Math.max(0, project.endTime - nowUnix())
+    const payload = (project.payload ?? {}) as Record<string, unknown>
+    const payoutRemainingSeconds = Math.max(0, Number(payload.time_remaining || 0))
+    const projectRemainingSeconds = Math.max(0, project.endTime - nowUnix())
+    const canReceive = project.runStatus === 1 && !project.isReceive
+    const paymentStatus: ProjectCardDto['paymentStatus'] = canReceive
+      ? 'available'
+      : projectRemainingSeconds <= 0
+        ? 'completed'
+        : project.isReceive
+          ? 'received'
+          : 'pending'
 
     return {
       id: project.id,
@@ -192,18 +202,23 @@ export class DashboardQueryService {
       account: account.account,
       containerCode: account.containerCode,
       name: project.projectName,
+      buyTime: payload.buy_time ? Number(payload.buy_time) : null,
       priceMxn: toNumber(project.payAmount),
       dailyProfitMxn: toNumber(project.dailyProfit),
       totalIncomeMxn: toNumber(project.totalIncome),
       totalRevenueMxn: toNumber(project.totalRevenue),
       availableBalanceMxn: account.availableBalanceMxn,
       periodDays: project.periodDays,
+      sendNums: Number(payload.send_nums || 0),
       endTime: project.endTime,
       receiveTime: project.receiveTime,
-      remainingSeconds,
-      remainingLabel: formatRemainingHms(remainingSeconds),
-      canReceive: project.runStatus === 1 && !project.isReceive,
+      payoutRemainingSeconds,
+      payoutRemainingLabel: formatRemainingHms(payoutRemainingSeconds),
+      projectRemainingSeconds,
+      projectRemainingLabel: formatRemainingHms(projectRemainingSeconds),
+      canReceive,
       isReceived: project.isReceive,
+      paymentStatus,
       extraFlag: project.extraFlag,
       descriptionHtml: project.descriptionHtml,
       iconUrl: project.iconUrl,

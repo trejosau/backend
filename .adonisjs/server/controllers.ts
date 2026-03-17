@@ -5,9 +5,11 @@
 
 export const controllers = {
   Accounts: () => import('#controllers/accounts_controller'),
+  Auth: () => import('#controllers/auth_controller'),
   Checkins: () => import('#controllers/checkins_controller'),
   Notifications: () => import('#controllers/notifications_controller'),
   Overview: () => import('#controllers/overview_controller'),
   Projects: () => import('#controllers/projects_controller'),
   ServiceNodes: () => import('#controllers/service_nodes_controller'),
+  Users: () => import('#controllers/users_controller'),
 }

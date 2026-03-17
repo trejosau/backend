@@ -70,6 +70,10 @@ export default defineConfig({
       file: () => import('#start/service_nodes_bootstrap'),
       environment: ['web'],
     },
+    {
+      file: () => import('#start/bootstrap_dashboard_admin'),
+      environment: ['web'],
+    },
   ],
 
   /*

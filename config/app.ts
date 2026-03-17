@@ -76,6 +76,6 @@ export const http = defineConfig({
     /**
      * Cross-site policy for cookie sending.
      */
-    sameSite: 'lax',
+    sameSite: app.inProduction ? 'none' : 'lax',
   },
 })

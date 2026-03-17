@@ -54,4 +54,20 @@ export default class AccountsController {
       throw error
     }
   }
+
+  async sync({ params, response }: HttpContext) {
+    try {
+      const service = new AccountsOrchestratorService()
+      return response.ok({
+        data: await service.sync(params.slug),
+        message: 'Cuenta resincronizada.',
+      })
+    } catch (error) {
+      if (error instanceof AppException) {
+        return response.status(error.status).send({ error: error.message, code: error.code })
+      }
+
+      throw error
+    }
+  }
 }

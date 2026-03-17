@@ -42,4 +42,7 @@ router.use([
  * Named middleware collection must be explicitly assigned to
  * the routes or the routes group.
  */
-export const middleware = router.named({})
+export const middleware = router.named({
+  dashboardAuth: () => import('#middleware/dashboard_auth_middleware'),
+  dashboardAdmin: () => import('#middleware/dashboard_admin_middleware'),
+})

@@ -22,9 +22,24 @@ export class DashboardUsersService {
     const existing = await DashboardUser.findBy('username', username)
 
     if (existing) {
+      let dirty = false
+
       if (existing.role !== 'admin') {
         existing.role = 'admin'
+        dirty = true
+      }
+
+      if (!existing.active) {
         existing.active = true
+        dirty = true
+      }
+
+      if (!this.passwordService.verify(password, existing.passwordHash)) {
+        existing.passwordHash = this.passwordService.hash(password)
+        dirty = true
+      }
+
+      if (dirty) {
         await existing.save()
       }
       return

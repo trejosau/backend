@@ -30,12 +30,17 @@ export class AccountsOrchestratorService {
     }
 
     const node = await this.nodeAllocator.pick(input.containerCode)
-    await this.internalClient.registerAccount(node, {
-      slug,
-      account: input.account,
-      pwd: input.pwd,
-      containerCode: node.code,
-    })
+    try {
+      await this.internalClient.registerAccount(node, {
+        slug,
+        account: input.account,
+        pwd: input.pwd,
+        containerCode: node.code,
+      })
+    } catch (error) {
+      await ManagedAccount.query().where('slug', slug).delete()
+      throw error
+    }
 
     await this.notificationService.push({
       level: 'success',

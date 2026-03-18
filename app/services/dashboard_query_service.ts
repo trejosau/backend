@@ -13,7 +13,7 @@ import Notification from '#models/notification'
 import ProjectSnapshot from '#models/project_snapshot'
 import { AppException } from '#exceptions/app_exception'
 import { toNumber } from '#utils/numbers'
-import { formatRemainingHms, nowUnix } from '#utils/time'
+import { formatRemainingHms, nowUnix, remainingFromReceiveTime } from '#utils/time'
 
 export class DashboardQueryService {
   async overview(): Promise<OverviewDto> {
@@ -185,8 +185,18 @@ export class DashboardQueryService {
 
   private serializeProject(project: ProjectSnapshot, account: AccountListItemDto): ProjectCardDto {
     const payload = (project.payload ?? {}) as Record<string, unknown>
-    const payoutRemainingSeconds = Math.max(0, Number(payload.time_remaining || 0))
-    const projectRemainingSeconds = Math.max(0, project.endTime - nowUnix())
+    const currentUnix = nowUnix()
+    const payloadRemainingSeconds = Math.max(0, Math.floor(Number(payload.time_remaining || 0)))
+    const projectRemainingSeconds = Math.max(0, project.endTime - currentUnix)
+    const payoutRemainingSeconds =
+      projectRemainingSeconds <= 0
+        ? 0
+        : project.isReceive
+          ? Math.max(
+              payloadRemainingSeconds,
+              remainingFromReceiveTime(project.receiveTime, currentUnix)
+            )
+          : payloadRemainingSeconds
     const canReceive = project.runStatus === 1 && !project.isReceive
     const paymentStatus: ProjectCardDto['paymentStatus'] = canReceive
       ? 'available'
